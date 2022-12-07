@@ -8,3 +8,9 @@ allow you to paste word-kind sources gathering unprintable characters.
 
 [Deno]: https://deno.land/
 [ddc.vim]: https://github.com/Shougo/ddc.vim
+
+## Usage
+
+Used in [ddc-source-register][]. See that source.
+
+[ddc-source-register]: https://github.com/Milly/ddc-source-register
