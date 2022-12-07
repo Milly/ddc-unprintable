@@ -1,6 +1,7 @@
 # ddc_unprintable
 
 [![license:MIT](https://img.shields.io/github/license/Milly/ddc_unprintable?style=flat-square)](LICENSE)
+[![deno land](http://img.shields.io/badge/available%20on-deno.land/x/ddc__unprintable-lightgrey.svg?logo=deno)](https://deno.land/x/ddc_unprintable)
 
 [Deno][] module for sources of [ddc.vim][]. This module contains helpers that
 allow you to paste word-kind sources gathering unprintable characters.
