@@ -3,24 +3,22 @@ import type {
   Item,
   OnCallback,
   PumHighlight,
-} from "https://deno.land/x/ddc_vim@v3.1.0/types.ts";
+} from "https://deno.land/x/ddc_vim@v3.3.0/types.ts";
+import type { Denops } from "https://deno.land/x/denops_std@v3.12.0/mod.ts";
 import {
-  mode,
-  printf,
-  strlen,
-} from "https://deno.land/x/denops_std@v3.9.1/function/mod.ts";
-import type { Position } from "https://deno.land/x/denops_std@v3.9.1/function/types.ts";
-import type { Denops } from "https://deno.land/x/denops_std@v3.9.1/mod.ts";
-import { setcmdline } from "https://deno.land/x/denops_backport@v1.0.1/functions.ts";
-import { defer } from "https://deno.land/x/denops_defer@v0.4.0/batch/defer.ts";
-import { batch } from "https://deno.land/x/denops_std@v3.9.3/batch/mod.ts";
-import { append } from "https://deno.land/x/denops_std@v3.9.3/function/_generated.ts";
-import {
+  append,
   getline,
+  mode,
+  type Position,
+  printf,
   setline,
-} from "https://deno.land/x/denops_std@v3.9.3/function/common.ts";
-import { setpos } from "https://deno.land/x/denops_std@v3.9.3/function/cursor.ts";
-import { vim } from "https://deno.land/x/denops_std@v3.9.3/variable/variable.ts";
+  setpos,
+  strlen,
+} from "https://deno.land/x/denops_std@v3.12.0/function/mod.ts";
+import { batch } from "https://deno.land/x/denops_std@v3.12.0/batch/mod.ts";
+import { vim } from "https://deno.land/x/denops_std@v3.12.0/variable/mod.ts";
+import { setcmdline } from "https://deno.land/x/denops_backport@v1.0.2/functions.ts";
+import { defer } from "https://deno.land/x/denops_defer@v0.6.0/batch/defer.ts";
 
 // deno-fmt-ignore
 const UNPRINTABLE_CHARS = [
