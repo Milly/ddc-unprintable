@@ -204,10 +204,10 @@ export class Unprintable<
     // If no unprintable contains, do nothing.
     if (!this.#reUnprintableChar.test(origWord)) return;
 
-    const [vimMode, vchar] = await defer(denops, (helper) => [
+    const [vimMode, vchar] = await defer(denops, (helper) => ([
       mode(helper),
-      vim.get(helper, "char"),
-    ]);
+      vim.get(helper, "char") as Promise<string>,
+    ] as const));
     const tail = this.#makeWord(origWord) + origNextInput;
     const head = nextInput ? tail.slice(0, -nextInput.length) : tail;
 
