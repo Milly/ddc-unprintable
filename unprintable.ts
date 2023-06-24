@@ -320,7 +320,7 @@ export class Unprintable<
     const highlights: PumHighlight[] = [];
     let lastHighlight: PumHighlight | undefined;
     let len = 0; // [chars]
-    let col = 0; // [bytes]
+    let col = 1; // [bytes]
 
     for (const { chars, bytes } of abbrSlices) {
       if (bytes === 0 && lastHighlight) {
