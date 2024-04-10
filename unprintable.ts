@@ -3,8 +3,8 @@ import type {
   Item,
   OnCallback,
   PumHighlight,
-} from "https://deno.land/x/ddc_vim@v3.6.0/types.ts";
-import type { Denops } from "https://deno.land/x/denops_std@v5.0.1/mod.ts";
+} from "https://deno.land/x/ddc_vim@v4.3.1/types.ts";
+import type { Denops } from "https://deno.land/x/denops_std@v6.4.0/mod.ts";
 import {
   append,
   getline,
@@ -15,9 +15,9 @@ import {
   setline,
   setpos,
   strlen,
-} from "https://deno.land/x/denops_std@v5.0.1/function/mod.ts";
-import { batch } from "https://deno.land/x/denops_std@v5.0.1/batch/mod.ts";
-import { vim } from "https://deno.land/x/denops_std@v5.0.1/variable/mod.ts";
+} from "https://deno.land/x/denops_std@v6.4.0/function/mod.ts";
+import { batch } from "https://deno.land/x/denops_std@v6.4.0/batch/mod.ts";
+import { vim } from "https://deno.land/x/denops_std@v6.4.0/variable/mod.ts";
 import { defer } from "https://deno.land/x/denops_defer@v1.0.0/batch/defer.ts";
 
 // deno-fmt-ignore
