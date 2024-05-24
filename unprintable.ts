@@ -108,7 +108,7 @@ export class Unprintable<
   }
   set placeholder(value: string) {
     if (value.length !== 1) {
-      throw new Error("placeholder must be a single character.");
+      throw new TypeError("placeholder must be a single character.");
     }
     this.#placeholder = value;
   }
@@ -118,7 +118,7 @@ export class Unprintable<
   }
   set abbrWidth(value: number) {
     if (value < 0 || value !== (value | 0)) {
-      throw new Error(
+      throw new TypeError(
         "abbrWidth must be an interger greater than or equal to 0.",
       );
     }
