@@ -3,8 +3,8 @@ import type {
   Item,
   OnCallback,
   PumHighlight,
-} from "https://deno.land/x/ddc_vim@v5.0.0/types.ts";
-import type { Denops } from "https://deno.land/x/denops_std@v6.5.0/mod.ts";
+} from "https://deno.land/x/ddc_vim@v5.0.1/types.ts";
+import type { Denops } from "@denops/std";
 import {
   append,
   getline,
@@ -15,10 +15,10 @@ import {
   setline,
   setpos,
   strlen,
-} from "https://deno.land/x/denops_std@v6.5.0/function/mod.ts";
-import { batch } from "https://deno.land/x/denops_std@v6.5.0/batch/mod.ts";
-import { vim } from "https://deno.land/x/denops_std@v6.5.0/variable/mod.ts";
-import { defer } from "https://deno.land/x/denops_defer@v1.0.0/batch/defer.ts";
+} from "@denops/std/function";
+import { batch } from "@denops/std/batch";
+import { vim } from "@denops/std/variable";
+import { accumulate } from "@milly/denops-batch-accumulate";
 
 // deno-fmt-ignore
 const UNPRINTABLE_CHARS = [
@@ -139,8 +139,8 @@ export class Unprintable<
     const abbrWidth = Math.max(0, this.#abbrWidth);
     const abbrFormat = `%.${abbrWidth}S`;
 
-    const itemSlices = await defer(denops, (helper) =>
-      items.map((item) => {
+    const itemSlices = await accumulate(denops, (helper) => {
+      return items.map((item) => {
         const origWord = item.word;
         const word = this.#makeWord(origWord);
         const longAbbr = this.#makeAbbr(origWord);
@@ -154,7 +154,8 @@ export class Unprintable<
             bytes: strlen(helper, slice) as Promise<number>,
           }));
         return { origWord, word, abbr, slices };
-      }));
+      });
+    });
 
     return items.map((item, index) => {
       const { origWord, word, abbr, slices } = itemSlices[index];
@@ -204,7 +205,7 @@ export class Unprintable<
     // If no unprintable contains, do nothing.
     if (!this.#reUnprintableChar.test(origWord)) return;
 
-    const [vimMode, vchar] = await defer(denops, (helper) => ([
+    const [vimMode, vchar] = await accumulate(denops, (helper) => ([
       mode(helper),
       vim.get(helper, "char") as Promise<string>,
     ] as const));

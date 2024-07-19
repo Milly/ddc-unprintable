@@ -1,13 +1,33 @@
 {
-  "lock": false,
-  "tasks": {
-    "check": "deno lint && deno fmt --check && deno check **/*.ts",
-    "test": "deno test -A --doc --parallel --shuffle",
-    "upgrade": "deno run --allow-env --allow-read --allow-write=. --allow-run=git,deno --allow-net=deno.land jsr:@molt/cli mod.ts"
+  "name": "ddc-unpritable",
+  "version": "4.0.0-pre",
+  "exports": {
+    ".": "./unprintable.ts"
+  },
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "**/*.ts"
+    ],
+    "exclude": [
+      "**/*_test.ts"
+    ]
   },
   "fmt": {
     "exclude": [
       "README.md"
     ]
+  },
+  "tasks": {
+    "check": "deno lint && deno fmt --check && deno check **/*.ts",
+    "test": "deno test -A --doc --parallel --shuffle",
+    "test:coverage": "deno task test --coverage=.coverage",
+    "coverage": "deno coverage .coverage",
+    "coverage:clean": "rm -rf .coverage"
+  },
+  "imports": {
+    "@denops/std": "jsr:@denops/std@^7.0.0-pre2",
+    "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@^1.0.0-pre"
   }
 }
