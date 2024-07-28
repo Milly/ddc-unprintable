@@ -3,7 +3,7 @@ import type {
   Item,
   OnCallback,
   PumHighlight,
-} from "https://deno.land/x/ddc_vim@v5.0.1/types.ts";
+} from "@shougo/ddc-vim/types";
 import type { Denops } from "@denops/std";
 import {
   append,

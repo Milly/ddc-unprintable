@@ -4,55 +4,69 @@
     "specifiers": {
       "jsr:@core/unknownutil@3.18.1": "jsr:@core/unknownutil@3.18.1",
       "jsr:@core/unknownutil@^3.18.0": "jsr:@core/unknownutil@3.18.1",
-      "jsr:@denops/core@^7.0.0-pre1": "jsr:@denops/core@7.0.0-pre1",
-      "jsr:@denops/std@^7.0.0-pre2": "jsr:@denops/std@7.0.0-pre2",
+      "jsr:@denops/core@^7.0.0": "jsr:@denops/core@7.0.0",
+      "jsr:@denops/std@7.0.0": "jsr:@denops/std@7.0.0",
+      "jsr:@denops/std@^7.0.0": "jsr:@denops/std@7.0.0",
       "jsr:@lambdalisue/async@2.1.1": "jsr:@lambdalisue/async@2.1.1",
-      "jsr:@milly/denops-batch-accumulate@^1.0.0-pre": "jsr:@milly/denops-batch-accumulate@1.0.0-pre",
+      "jsr:@milly/denops-batch-accumulate@^1.0.0-pre3": "jsr:@milly/denops-batch-accumulate@1.0.0-pre3",
+      "jsr:@shougo/ddc-vim@^6.0.0": "jsr:@shougo/ddc-vim@6.0.0",
       "jsr:@std/assert@0.226.0": "jsr:@std/assert@0.226.0",
       "jsr:@std/assert@1.0.0-rc.2": "jsr:@std/assert@1.0.0-rc.2",
-      "jsr:@std/assert@^0.224.0": "jsr:@std/assert@0.224.0",
+      "jsr:@std/assert@1.0.1": "jsr:@std/assert@1.0.1",
       "jsr:@std/assert@^0.226.0": "jsr:@std/assert@0.226.0",
-      "jsr:@std/async@0.224.2": "jsr:@std/async@0.224.2",
-      "jsr:@std/async@^0.224.2": "jsr:@std/async@0.224.2",
+      "jsr:@std/async@1.0.1": "jsr:@std/async@1.0.1",
       "jsr:@std/encoding@0.224.3": "jsr:@std/encoding@0.224.3",
-      "jsr:@std/fs@^0.224.0": "jsr:@std/fs@0.224.0",
+      "jsr:@std/encoding@1.0.1": "jsr:@std/encoding@1.0.1",
+      "jsr:@std/fs@^1.0.0": "jsr:@std/fs@1.0.0",
       "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.1",
+      "jsr:@std/internal@^1.0.1": "jsr:@std/internal@1.0.1",
       "jsr:@std/path@0.225.2": "jsr:@std/path@0.225.2",
-      "jsr:@std/path@^0.224.0": "jsr:@std/path@0.224.0",
-      "jsr:@std/semver@^0.224.0": "jsr:@std/semver@0.224.3",
+      "jsr:@std/path@1.0.2": "jsr:@std/path@1.0.2",
+      "jsr:@std/path@^1.0.2": "jsr:@std/path@1.0.2",
+      "jsr:@std/semver@0.224.3": "jsr:@std/semver@0.224.3",
       "jsr:@std/testing@0.225.2": "jsr:@std/testing@0.225.2",
-      "jsr:@std/ulid@^0.224.0": "jsr:@std/ulid@0.224.1"
+      "jsr:@std/testing@0.225.3": "jsr:@std/testing@0.225.3",
+      "jsr:@std/ulid@^1.0.0": "jsr:@std/ulid@1.0.0"
     },
     "jsr": {
       "@core/unknownutil@3.18.1": {
         "integrity": "6aaa108b623ff971d062dd345da7ca03b97f61ae3d29c8677bff14fec11f0d76"
       },
-      "@denops/core@7.0.0-pre1": {
-        "integrity": "1202d75bbf55bb120223414f69b21adf1d3fc4971e1212e3a1d6281cd2ca4ee3"
+      "@denops/core@7.0.0": {
+        "integrity": "6ba91db2fd6c6494f0a05cbb99c8600362818ee0749e43f1dc86a0000dee400b"
       },
-      "@denops/std@7.0.0-pre2": {
-        "integrity": "d81ab7fbdf27d3d86ee57f80a5f6771c070189c84c399db1b7c845638332601d",
+      "@denops/std@7.0.0": {
+        "integrity": "6fda026029958ad9b6e717a989efd824c5ce8efa464252f9982898a8588abb15",
         "dependencies": [
           "jsr:@core/unknownutil@^3.18.0",
-          "jsr:@denops/core@^7.0.0-pre1",
-          "jsr:@std/fs@^0.224.0",
-          "jsr:@std/path@^0.224.0",
-          "jsr:@std/semver@^0.224.0",
-          "jsr:@std/ulid@^0.224.0"
+          "jsr:@denops/core@^7.0.0",
+          "jsr:@std/fs@^1.0.0",
+          "jsr:@std/path@^1.0.2",
+          "jsr:@std/semver@0.224.3",
+          "jsr:@std/ulid@^1.0.0"
         ]
       },
       "@lambdalisue/async@2.1.1": {
         "integrity": "1fc9bc6f4ed50215cd2f7217842b18cea80f81c25744f88f8c5eb4be5a1c9ab4"
       },
-      "@milly/denops-batch-accumulate@1.0.0-pre": {
-        "integrity": "8f12d9d96e28796e0c359a3e487b9a561c763c3df924c46d738ba923a45fcf33",
+      "@milly/denops-batch-accumulate@1.0.0-pre3": {
+        "integrity": "5bf905f130d6e6debe230a3af6647fa5091826a2f5e9db779a48ecbdc1890062",
         "dependencies": [
-          "jsr:@denops/core@^7.0.0-pre1",
-          "jsr:@std/async@^0.224.2"
+          "jsr:@denops/core@^7.0.0"
         ]
       },
-      "@std/assert@0.224.0": {
-        "integrity": "8643233ec7aec38a940a8264a6e3eed9bfa44e7a71cc6b3c8874213ff401967f"
+      "@shougo/ddc-vim@6.0.0": {
+        "integrity": "1ee544cf02500d131972c245cd01e1b7f7e921b2c120815ec56e340d2a7a7b4e",
+        "dependencies": [
+          "jsr:@core/unknownutil@3.18.1",
+          "jsr:@denops/std@7.0.0",
+          "jsr:@lambdalisue/async@2.1.1",
+          "jsr:@std/assert@1.0.1",
+          "jsr:@std/async@1.0.1",
+          "jsr:@std/encoding@1.0.1",
+          "jsr:@std/path@1.0.2",
+          "jsr:@std/testing@0.225.3"
+        ]
       },
       "@std/assert@0.226.0": {
         "integrity": "0dfb5f7c7723c18cec118e080fec76ce15b4c31154b15ad2bd74822603ef75b3",
@@ -61,35 +75,43 @@
         ]
       },
       "@std/assert@1.0.0-rc.2": {
-        "integrity": "0484eab1d76b55fca1c3beaff485a274e67dd3b9f065edcbe70030dfc0b964d3"
+        "integrity": "0484eab1d76b55fca1c3beaff485a274e67dd3b9f065edcbe70030dfc0b964d3",
+        "dependencies": [
+          "jsr:@std/internal@^1.0.0"
+        ]
       },
-      "@std/async@0.224.2": {
-        "integrity": "4d277d6e165df43d5e061ba0ef3edfddb8e8d558f5b920e3e6b1d2614b44d074"
+      "@std/assert@1.0.1": {
+        "integrity": "13590ef8e5854f59e4ad252fd987e83239a1bf1f16cb9c69c1d123ebb807a75b",
+        "dependencies": [
+          "jsr:@std/internal@^1.0.1"
+        ]
+      },
+      "@std/async@1.0.1": {
+        "integrity": "3c7f6324a8a1b47ca657e5a349b511c9a6c2c0729e9d66b223c9ecaac0753ecb"
       },
       "@std/encoding@0.224.3": {
         "integrity": "5e861b6d81be5359fad4155e591acf17c0207b595112d1840998bb9f476dbdaf"
       },
-      "@std/fs@0.224.0": {
-        "integrity": "52a5ec89731ac0ca8f971079339286f88c571a4d61686acf75833f03a89d8e69",
+      "@std/encoding@1.0.1": {
+        "integrity": "5955c6c542ebb4ce6587c3b548dc71e07a6c27614f1976d1d3887b1196cf4e65"
+      },
+      "@std/fs@1.0.0": {
+        "integrity": "d72e4a125af7168d717a2ed1dca77a728b422b0d138fd20579e3fa41a77da943",
         "dependencies": [
-          "jsr:@std/assert@^0.224.0",
-          "jsr:@std/path@^0.224.0"
+          "jsr:@std/path@^1.0.2"
         ]
       },
       "@std/internal@1.0.1": {
         "integrity": "6f8c7544d06a11dd256c8d6ba54b11ed870aac6c5aeafff499892662c57673e6"
-      },
-      "@std/path@0.224.0": {
-        "integrity": "55bca6361e5a6d158b9380e82d4981d82d338ec587de02951e2b7c3a24910ee6",
-        "dependencies": [
-          "jsr:@std/assert@^0.224.0"
-        ]
       },
       "@std/path@0.225.2": {
         "integrity": "0f2db41d36b50ef048dcb0399aac720a5348638dd3cb5bf80685bf2a745aa506",
         "dependencies": [
           "jsr:@std/assert@^0.226.0"
         ]
+      },
+      "@std/path@1.0.2": {
+        "integrity": "a452174603f8c620bd278a380c596437a9eef50c891c64b85812f735245d9ec7"
       },
       "@std/semver@0.224.3": {
         "integrity": "7bb34b5ad46de2c0c73de0ca3e30081ef64b4361f66abd57c84ff1011c6a1233"
@@ -100,8 +122,14 @@
           "jsr:@std/assert@1.0.0-rc.2"
         ]
       },
-      "@std/ulid@0.224.1": {
-        "integrity": "4de06fdb030ff3990b1b0344e330373c11ce6051ac449fc435667a485a6723fa"
+      "@std/testing@0.225.3": {
+        "integrity": "348c24d0479d44ab3dbb4f26170f242e19f24051b45935d4a9e7ca0ab7e37780",
+        "dependencies": [
+          "jsr:@std/assert@1.0.0-rc.2"
+        ]
+      },
+      "@std/ulid@1.0.0": {
+        "integrity": "d41c3d27a907714413649fee864b7cde8d42ee68437d22b79d5de4f81d808780"
       }
     }
   },
@@ -374,8 +402,9 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@denops/std@^7.0.0-pre2",
-      "jsr:@milly/denops-batch-accumulate@^1.0.0-pre"
+      "jsr:@denops/std@^7.0.0",
+      "jsr:@milly/denops-batch-accumulate@^1.0.0-pre3",
+      "jsr:@shougo/ddc-vim@^6.0.0"
     ]
   }
 }

@@ -27,7 +27,8 @@
     "coverage:clean": "rm -rf .coverage"
   },
   "imports": {
-    "@denops/std": "jsr:@denops/std@^7.0.0-pre2",
-    "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@^1.0.0-pre"
+    "@denops/std": "jsr:@denops/std@^7.0.0",
+    "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@^1.0.0-pre3",
+    "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@^6.0.0"
   }
 }
