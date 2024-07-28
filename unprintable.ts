@@ -311,7 +311,7 @@ export class Unprintable<
   }
 
   #makeAbbr(word: string): string {
-    return word.replaceAll(this.#reUnprintableChar, unpritableCharToDisplay);
+    return word.replaceAll(this.#reUnprintableChar, unprintableCharToDisplay);
   }
 
   #generateHighlights(
@@ -370,7 +370,7 @@ function textToCmdline(text: string): string {
   return text.replaceAll("\n", "\r").replaceAll("\x00", "\n");
 }
 
-function unpritableCharToDisplay(c: string): string {
+function unprintableCharToDisplay(c: string): string {
   const code = c.charCodeAt(0);
   if (code <= 0x1f) return "^" + String.fromCharCode(code + 0x40);
   if (code === 0x7f) return "^?";
