@@ -34,3 +34,6 @@ jobs:
 
       - name: Check
         run: deno task check
+
+      - name: Check publish
+        run: deno task test:publish
