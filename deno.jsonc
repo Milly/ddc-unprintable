@@ -1,6 +1,6 @@
 {
   "name": "@milly/ddc-unprintable",
-  "version": "4.0.0-pre",
+  "version": "4.0.0-pre2",
   "exports": {
     ".": "./unprintable.ts"
   },
@@ -20,16 +20,16 @@
     ]
   },
   "tasks": {
-    "check": "deno lint && deno fmt --check && deno check **/*.ts",
+    "check": "deno lint && deno fmt --check && deno check --no-lock **/*.ts",
+    "check:publish": "deno publish --dry-run",
     "test": "deno test -A --doc --parallel --shuffle",
-    "test:publish": "deno publish --dry-run",
     "test:coverage": "deno task test --coverage=.coverage",
     "coverage": "deno coverage .coverage",
     "coverage:clean": "rm -rf .coverage"
   },
   "imports": {
     "@denops/std": "jsr:@denops/std@^7.0.0",
-    "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@^1.0.0-pre3",
+    "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@^1.0.0-pre4",
     "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@^6.0.0"
   }
 }

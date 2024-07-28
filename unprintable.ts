@@ -14,7 +14,6 @@ import {
   setcmdline,
   setline,
   setpos,
-  strlen,
 } from "@denops/std/function";
 import { batch } from "@denops/std/batch";
 import { vim } from "@denops/std/variable";
@@ -139,42 +138,37 @@ export class Unprintable<
     const abbrWidth = Math.max(0, this.#abbrWidth);
     const abbrFormat = `%.${abbrWidth}S`;
 
-    const itemSlices = await accumulate(denops, (helper) => {
-      return items.map((item) => {
+    return await accumulate(denops, (helper) => {
+      return Promise.all(items.map(async (item) => {
         const origWord = item.word;
         const word = this.#makeWord(origWord);
         const longAbbr = this.#makeAbbr(origWord);
         const abbr = abbrWidth
-          ? printf(helper, abbrFormat, longAbbr) as Promise<string>
+          ? await printf(helper, abbrFormat, longAbbr)
           : longAbbr;
         const slices = (abbrWidth ? origWord.slice(0, abbrWidth) : origWord)
           .split(this.#reUnprintableChar).slice(0, -1)
           .map((slice) => ({
             chars: slice.length,
-            bytes: strlen(helper, slice) as Promise<number>,
+            bytes: byteLength(slice),
           }));
-        return { origWord, word, abbr, slices };
-      });
-    });
-
-    return items.map((item, index) => {
-      const { origWord, word, abbr, slices } = itemSlices[index];
-      return {
-        ...item,
-        word,
-        abbr,
-        highlights: [
-          ...(item.highlights ?? []),
-          ...this.#generateHighlights(abbr, slices),
-        ],
-        user_data: {
-          ...item.user_data,
-          unprintable: {
-            origWord,
-            origNextInput: nextInput,
-          } as UnprintableData,
-        } as unknown as UserData,
-      };
+        return {
+          ...item,
+          word,
+          abbr,
+          highlights: [
+            ...(item.highlights ?? []),
+            ...this.#generateHighlights(abbr, slices),
+          ],
+          user_data: {
+            ...item.user_data,
+            unprintable: {
+              origWord,
+              origNextInput: nextInput,
+            } as UnprintableData,
+          } as unknown as UserData,
+        };
+      }));
     });
   }
 
@@ -205,10 +199,13 @@ export class Unprintable<
     // If no unprintable contains, do nothing.
     if (!this.#reUnprintableChar.test(origWord)) return;
 
-    const [vimMode, vchar] = await accumulate(denops, (helper) => ([
-      mode(helper),
-      vim.get(helper, "char") as Promise<string>,
-    ] as const));
+    const [vimMode, vchar] = await accumulate(denops, (helper) =>
+      Promise.all(
+        [
+          mode(helper),
+          vim.get(helper, "char") as Promise<string>,
+        ] as const,
+      ));
     const tail = this.#makeWord(origWord) + origNextInput;
     const head = nextInput ? tail.slice(0, -nextInput.length) : tail;
 
@@ -239,14 +236,14 @@ export class Unprintable<
       // Replace cmdline
       const cmdHead = textToCmdline(lineHead + userInput);
       const cmdLine = cmdHead + textToCmdline(lineTail);
-      const pos = await strlen(denops, cmdHead) as number + 1;
+      const pos = byteLength(cmdHead) + 1;
       await setcmdline(denops, cmdLine, pos);
     } else {
       // Replace buffer
       const lines = textToRegContents(lineHead + userInput + lineTail);
       const linesHead = textToRegContents(lineHead + userInput);
       const cursorLN = lineNr + linesHead.length - 1;
-      const cursorCol = await strlen(denops, linesHead.at(-1)) as number + 1;
+      const cursorCol = byteLength(linesHead.at(-1) ?? "") + 1;
       const pos: Position = [0, cursorLN, cursorCol, 0];
 
       const [firstLine, middleLines, lastLine] = replaceLastLine
@@ -377,4 +374,9 @@ function unprintableCharToDisplay(c: string): string {
   if (code <= 0x9f) return "~" + String.fromCharCode(code - 0x40);
   if (code <= 0xfe) return "|" + String.fromCharCode(code - 0x80);
   return "~?";
+}
+
+const encoder = new TextEncoder();
+function byteLength(str: string): number {
+  return encoder.encode(str).length;
 }
