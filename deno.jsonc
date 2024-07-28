@@ -1,5 +1,5 @@
 {
-  "name": "ddc-unpritable",
+  "name": "@milly/ddc-unpritable",
   "version": "4.0.0-pre",
   "exports": {
     ".": "./unprintable.ts"
