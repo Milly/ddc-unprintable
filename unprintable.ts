@@ -138,7 +138,7 @@ export class Unprintable<
     const abbrWidth = Math.max(0, this.#abbrWidth);
     const abbrFormat = `%.${abbrWidth}S`;
 
-    const itemSlices = await accumulate(denops, (helper) => {
+    return await accumulate(denops, (helper) => {
       return Promise.all(items.map(async (item) => {
         const origWord = item.word;
         const word = this.#makeWord(origWord);
@@ -152,28 +152,23 @@ export class Unprintable<
             chars: slice.length,
             bytes: byteLength(slice),
           }));
-        return { origWord, word, abbr, slices };
+        return {
+          ...item,
+          word,
+          abbr,
+          highlights: [
+            ...(item.highlights ?? []),
+            ...this.#generateHighlights(abbr, slices),
+          ],
+          user_data: {
+            ...item.user_data,
+            unprintable: {
+              origWord,
+              origNextInput: nextInput,
+            } as UnprintableData,
+          } as unknown as UserData,
+        };
       }));
-    });
-
-    return items.map((item, index) => {
-      const { origWord, word, abbr, slices } = itemSlices[index];
-      return {
-        ...item,
-        word,
-        abbr,
-        highlights: [
-          ...(item.highlights ?? []),
-          ...this.#generateHighlights(abbr, slices),
-        ],
-        user_data: {
-          ...item.user_data,
-          unprintable: {
-            origWord,
-            origNextInput: nextInput,
-          } as UnprintableData,
-        } as unknown as UserData,
-      };
     });
   }
 
@@ -204,10 +199,13 @@ export class Unprintable<
     // If no unprintable contains, do nothing.
     if (!this.#reUnprintableChar.test(origWord)) return;
 
-    const [vimMode, vchar] = await accumulate(denops, (helper) => ([
-      mode(helper),
-      vim.get(helper, "char") as Promise<string>,
-    ] as const));
+    const [vimMode, vchar] = await accumulate(denops, (helper) =>
+      Promise.all(
+        [
+          mode(helper),
+          vim.get(helper, "char") as Promise<string>,
+        ] as const,
+      ));
     const tail = this.#makeWord(origWord) + origNextInput;
     const head = nextInput ? tail.slice(0, -nextInput.length) : tail;
 
