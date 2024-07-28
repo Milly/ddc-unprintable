@@ -14,7 +14,6 @@ import {
   setcmdline,
   setline,
   setpos,
-  strlen,
 } from "@denops/std/function";
 import { batch } from "@denops/std/batch";
 import { vim } from "@denops/std/variable";
@@ -140,21 +139,21 @@ export class Unprintable<
     const abbrFormat = `%.${abbrWidth}S`;
 
     const itemSlices = await accumulate(denops, (helper) => {
-      return items.map((item) => {
+      return Promise.all(items.map(async (item) => {
         const origWord = item.word;
         const word = this.#makeWord(origWord);
         const longAbbr = this.#makeAbbr(origWord);
         const abbr = abbrWidth
-          ? printf(helper, abbrFormat, longAbbr) as Promise<string>
+          ? await printf(helper, abbrFormat, longAbbr)
           : longAbbr;
         const slices = (abbrWidth ? origWord.slice(0, abbrWidth) : origWord)
           .split(this.#reUnprintableChar).slice(0, -1)
           .map((slice) => ({
             chars: slice.length,
-            bytes: strlen(helper, slice) as Promise<number>,
+            bytes: byteLength(slice),
           }));
         return { origWord, word, abbr, slices };
-      });
+      }));
     });
 
     return items.map((item, index) => {
@@ -239,14 +238,14 @@ export class Unprintable<
       // Replace cmdline
       const cmdHead = textToCmdline(lineHead + userInput);
       const cmdLine = cmdHead + textToCmdline(lineTail);
-      const pos = await strlen(denops, cmdHead) as number + 1;
+      const pos = byteLength(cmdHead) + 1;
       await setcmdline(denops, cmdLine, pos);
     } else {
       // Replace buffer
       const lines = textToRegContents(lineHead + userInput + lineTail);
       const linesHead = textToRegContents(lineHead + userInput);
       const cursorLN = lineNr + linesHead.length - 1;
-      const cursorCol = await strlen(denops, linesHead.at(-1)) as number + 1;
+      const cursorCol = byteLength(linesHead.at(-1) ?? "") + 1;
       const pos: Position = [0, cursorLN, cursorCol, 0];
 
       const [firstLine, middleLines, lastLine] = replaceLastLine
@@ -377,4 +376,9 @@ function unprintableCharToDisplay(c: string): string {
   if (code <= 0x9f) return "~" + String.fromCharCode(code - 0x40);
   if (code <= 0xfe) return "|" + String.fromCharCode(code - 0x80);
   return "~?";
+}
+
+const encoder = new TextEncoder();
+function byteLength(str: string): number {
+  return encoder.encode(str).length;
 }
