@@ -1,6 +1,6 @@
 {
   "name": "@milly/ddc-unprintable",
-  "version": "4.0.0-pre2",
+  "version": "0.0.0",
   "exports": {
     ".": "./unprintable.ts"
   },
