@@ -29,7 +29,7 @@
   },
   "imports": {
     "@denops/std": "jsr:@denops/std@^7.0.0",
-    "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@^1.0.0-pre4",
+    "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@^1.0.0-pre5",
     "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@^6.0.0"
   }
 }
