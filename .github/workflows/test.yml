@@ -22,8 +22,8 @@ jobs:
         runner:
           - ubuntu-latest
         deno_version:
-          - "1.45.x"
-          - "1.x"
+          - 2.0.0
+          - 2.x
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
