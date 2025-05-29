@@ -18,6 +18,15 @@ import {
 import { batch } from "@denops/std/batch";
 import { vim } from "@denops/std/variable";
 import { accumulate } from "@milly/denops-batch-accumulate";
+import {
+  byteLength,
+  getUnprintableChars,
+  makeCharCodeRangeRegExp,
+  makeId,
+  textToCmdline,
+  textToRegContents,
+  unprintableCharToDisplay,
+} from "./helper.ts";
 
 // deno-fmt-ignore
 const UNPRINTABLE_CHARS = [
@@ -176,9 +185,9 @@ export class Unprintable<
   async onInit(args: { denops: Denops }): Promise<void> {
     const chars = [
       ...UNPRINTABLE_CHARS,
-      ...(await this.#getUnprintableChars(args.denops)),
+      ...(await getUnprintableChars(args.denops)),
     ];
-    this.#reUnprintableChar = this.#makeUnprintableRegExp(chars);
+    this.#reUnprintableChar = makeCharCodeRangeRegExp(chars);
   }
 
   /** Should call this in `BaseSource.onCompleteDone()`. */
@@ -278,31 +287,6 @@ export class Unprintable<
     }
   }
 
-  #getUnprintableChars(denops: Denops): Promise<number[]> {
-    return denops.eval(
-      "range(0x100)->filter({ _, n -> nr2char(n) !~# '\\p' })",
-    ) as Promise<number[]>;
-  }
-
-  #makeUnprintableRegExp(unprintableChars: number[]): RegExp {
-    // generate RegExp e.g.: /[\x00-\x1f\x7f-\x9f]/g
-    const unprintableSet = new Set(unprintableChars);
-    const lastGuard = 0x100;
-    unprintableSet.delete(lastGuard);
-    const xhh = (n: number) => "\\x" + `0${n.toString(16)}`.slice(-2);
-    const range: string[] = [];
-    for (let start = -1, code = 0; code <= lastGuard; ++code) {
-      if (start < 0 && unprintableSet.has(code)) {
-        start = code;
-      } else if (start >= 0 && !unprintableSet.has(code)) {
-        const end = code - 1;
-        range.push(start === end ? xhh(start) : xhh(start) + "-" + xhh(end));
-        start = -1;
-      }
-    }
-    return new RegExp(`[${range.join("")}]`, "g");
-  }
-
   #makeWord(word: string): string {
     return word.replaceAll(this.#reUnprintableChar, this.#placeholder);
   }
@@ -352,31 +336,4 @@ export class Unprintable<
 
     return highlights;
   }
-}
-
-function makeId(): string {
-  return ("0000000" + Math.floor(Math.random() * 0xffffffff).toString(16))
-    .slice(-8);
-}
-
-function textToRegContents(text: string): string[] {
-  return text.split("\n").map((s) => s.replaceAll("\0", "\n"));
-}
-
-function textToCmdline(text: string): string {
-  return text.replaceAll("\n", "\r").replaceAll("\x00", "\n");
-}
-
-function unprintableCharToDisplay(c: string): string {
-  const code = c.charCodeAt(0);
-  if (code <= 0x1f) return "^" + String.fromCharCode(code + 0x40);
-  if (code === 0x7f) return "^?";
-  if (code <= 0x9f) return "~" + String.fromCharCode(code - 0x40);
-  if (code <= 0xfe) return "|" + String.fromCharCode(code - 0x80);
-  return "~?";
-}
-
-const encoder = new TextEncoder();
-function byteLength(str: string): number {
-  return encoder.encode(str).length;
 }
