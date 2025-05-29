@@ -1,3 +1,8 @@
+import type * as DdcSource from "@shougo/ddc-vim/source";
+
+// deno-lint-ignore no-explicit-any
+type AnyBaseParams = any;
+
 /**
  * Internal user data type reserved for _ddc-unprintable_ library.
  *
@@ -66,3 +71,25 @@ export interface UnprintableOptions extends Partial<UnprintableParameters> {
    */
   callbackId?: string;
 }
+
+/**
+ * Arguments for the `Unprintable.onInit()` method.
+ *
+ * This type is a subset of `OnInitArguments` in _ddc-vim/source_.
+ */
+export type UnprintableOnInitArguments = Pick<
+  DdcSource.OnInitArguments<AnyBaseParams>,
+  "denops"
+>;
+
+/**
+ * Arguments for the `Unprintable.onCompleteDone()` method.
+ *
+ * This type is a subset of `OnCompleteDoneArguments` in _ddc-vim/source_.
+ */
+export type UnprintableOnCompleteDoneArguments<
+  UserData extends UnprintableUserData,
+> = Pick<
+  DdcSource.OnCompleteDoneArguments<AnyBaseParams, UserData>,
+  "denops" | "onCallback" | "userData" | "context"
+>;

@@ -1,9 +1,4 @@
-import type {
-  Context,
-  Item,
-  OnCallback,
-  PumHighlight,
-} from "@shougo/ddc-vim/types";
+import type { Item, PumHighlight } from "@shougo/ddc-vim/types";
 import type { Denops } from "@denops/std";
 import {
   append,
@@ -29,6 +24,8 @@ import {
 } from "./helper.ts";
 import type { UnprintableData } from "./internal_type.ts";
 import type {
+  UnprintableOnCompleteDoneArguments,
+  UnprintableOnInitArguments,
   UnprintableOptions,
   UnprintableParameters,
   UnprintableUserData,
@@ -108,7 +105,7 @@ export class Unprintable<
    */
   async convertItems(
     denops: Denops,
-    items: Item<UserData>[],
+    items: readonly Item<UserData>[],
     nextInput: string,
   ): Promise<Item<UserData>[]> {
     const abbrWidth = Math.max(0, this.#abbrWidth);
@@ -149,7 +146,7 @@ export class Unprintable<
   }
 
   /** Should call this in `BaseSource.onInit()`. */
-  async onInit(args: { denops: Denops }): Promise<void> {
+  async onInit(args: UnprintableOnInitArguments): Promise<void> {
     const chars = [
       ...UNPRINTABLE_CHARS,
       ...(await getUnprintableChars(args.denops)),
@@ -159,12 +156,7 @@ export class Unprintable<
 
   /** Should call this in `BaseSource.onCompleteDone()`. */
   async onCompleteDone(
-    args: {
-      denops: Denops;
-      onCallback: OnCallback;
-      userData: UserData;
-      context: Context;
-    },
+    args: UnprintableOnCompleteDoneArguments<UserData>,
   ): Promise<void> {
     this.#completeDoneCount++;
     const { denops, onCallback, userData } = args;
@@ -264,7 +256,7 @@ export class Unprintable<
 
   #generateHighlights(
     abbr: string,
-    abbrSlices: { chars: number; bytes: number }[],
+    abbrSlices: readonly Readonly<{ chars: number; bytes: number }>[],
   ): PumHighlight[] {
     const highlights: PumHighlight[] = [];
     let lastHighlight: PumHighlight | undefined;
