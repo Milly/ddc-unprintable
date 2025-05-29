@@ -27,6 +27,12 @@ import {
   textToRegContents,
   unprintableCharToDisplay,
 } from "./helper.ts";
+import type { UnprintableData } from "./internal_type.ts";
+import type {
+  UnprintableOptions,
+  UnprintableParameters,
+  UnprintableUserData,
+} from "./type.ts";
 
 // deno-fmt-ignore
 const UNPRINTABLE_CHARS = [
@@ -38,48 +44,9 @@ const UNPRINTABLE_CHARS = [
 const UNPRINTABLE_CHAR_LENGTH = 2; // "^@".length
 const UNPRINTABLE_BYTE_LENGTH = 2; // strlen("^@")
 
-type UnprintableData = {
-  origWord: string;
-  origNextInput: string;
-};
-
-export type UnprintableUserData = {
-  unprintable?: never;
-};
-
-export type UnprintableOptions = {
-  /** Highlight name for unprintable chars.
-   *
-   * Default is "ddc_unprintable".
-   */
-  highlightName?: string;
-  /** Highlight group for unprintable chars.
-   *
-   * Default is "SpecialKey".
-   */
-  highlightGroup?: string;
-  /** Placeholder text for unprintable char.
-   *
-   * Must be a single character.
-   * Default is "?".
-   */
-  placeholder?: string;
-  /** Max width of the abbreviates column.
-   *
-   * If 0 is specified, be unlimited.
-   * Default is 0.
-   */
-  abbrWidth?: number;
-  /** Callback Id base string.
-   *
-   * If empty, use random id.
-   */
-  callbackId?: string;
-};
-
 export class Unprintable<
   UserData extends UnprintableUserData = UnprintableUserData,
-> implements Required<Omit<UnprintableOptions, "callbackId">> {
+> implements UnprintableParameters {
   // deno-lint-ignore no-control-regex
   #reUnprintableChar = /[\x00-\x1f]/g;
   #highlightName: string;

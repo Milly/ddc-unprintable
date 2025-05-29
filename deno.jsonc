@@ -2,7 +2,8 @@
   "name": "@milly/ddc-unprintable",
   "version": "0.0.0",
   "exports": {
-    ".": "./unprintable.ts"
+    ".": "./lib.ts",
+    "./type": "./type.ts"
   },
   "publish": {
     "include": [
