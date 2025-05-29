@@ -1,6 +1,7 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@core/unknownutil@4": "4.3.0",
     "jsr:@core/unknownutil@4.3": "4.3.0",
     "jsr:@core/unknownutil@^4.3.0": "4.3.0",
     "jsr:@denops/core@7": "7.0.1",
@@ -70,6 +71,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@core/unknownutil@4",
       "jsr:@denops/std@7",
       "jsr:@milly/denops-batch-accumulate@1",
       "jsr:@shougo/ddc-vim@9"

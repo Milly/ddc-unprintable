@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "exports": {
     ".": "./lib.ts",
+    "./error": "./error.ts",
     "./type": "./type.ts"
   },
   "publish": {
@@ -28,6 +29,7 @@
     "coverage:clean": "rm -rf .coverage"
   },
   "imports": {
+    "@core/unknownutil": "jsr:@core/unknownutil@4",
     "@denops/std": "jsr:@denops/std@7",
     "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@1",
     "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@9",

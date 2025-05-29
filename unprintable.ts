@@ -22,7 +22,10 @@ import {
   textToRegContents,
   unprintableCharToDisplay,
 } from "./helper.ts";
-import type { UnprintableData } from "./internal_type.ts";
+import {
+  ensureInternalUserData,
+  type InternalUserData,
+} from "./internal_type.ts";
 import type {
   UnprintableOnCompleteDoneArguments,
   UnprintableOnInitArguments,
@@ -142,6 +145,7 @@ export class Unprintable<
    *
    * @param opts - Optional parameters to configure the instance.
    * @returns A new instance of the Unprintable class.
+   * @throws {TypeError} If the `opts` contains invalid values.
    */
   constructor(opts: UnprintableOptions = {}) {
     this.#highlightName = opts.highlightName ?? "ddc_unprintable";
@@ -237,8 +241,8 @@ export class Unprintable<
             unprintable: {
               origWord,
               origNextInput: nextInput,
-            } as UnprintableData,
-          } as unknown as UserData,
+            },
+          } satisfies InternalUserData as unknown as UserData,
         };
       }));
     });
@@ -271,15 +275,20 @@ export class Unprintable<
    *
    * @param args - The arguments passed to `BaseSource.onCompleteDone()`.
    * @returns A Promise that resolves when the operation is complete.
+   * @throws {UnprintableError} If the `args.userData` is not valid.
    */
   async onCompleteDone(
     args: UnprintableOnCompleteDoneArguments<UserData>,
   ): Promise<void> {
     this.#completeDoneCount++;
-    const { denops, onCallback, userData } = args;
-    const { origWord, origNextInput } = userData
-      .unprintable as unknown as UnprintableData;
-    let { input, nextInput, lineNr } = args.context;
+    const { denops, onCallback, userData, context } = args;
+    const { nextInput } = context;
+    let { input, lineNr } = context;
+
+    // If userData is not valid, throw an error.
+    const {
+      unprintable: { origWord, origNextInput },
+    } = ensureInternalUserData(userData);
 
     // If no unprintable contains, do nothing.
     if (!this.#reUnprintableChar.test(origWord)) return;
