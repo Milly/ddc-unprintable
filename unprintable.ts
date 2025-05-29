@@ -44,8 +44,14 @@ const UNPRINTABLE_BYTE_LENGTH = 2; // strlen("^@")
 export class Unprintable<
   UserData extends UnprintableUserData = UnprintableUserData,
 > implements UnprintableParameters {
-  // deno-lint-ignore no-control-regex
-  #reUnprintableChar = /[\x00-\x1f]/g;
+  static #DEFAULT_UNPRINTABLE_CHARS_REGEX: RegExp | undefined;
+
+  #reUnprintableChar: RegExp = new RegExp(
+    Unprintable.#DEFAULT_UNPRINTABLE_CHARS_REGEX ??= makeCharCodeRangeRegExp(
+      UNPRINTABLE_CHARS,
+    ),
+    "g",
+  );
   #highlightName: string;
   #highlightGroup: string;
   #placeholder = "?";
