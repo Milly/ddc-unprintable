@@ -1,52 +1,68 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
-    "jsr:@core/unknownutil@3.18.1": "3.18.1",
-    "jsr:@core/unknownutil@^3.18.0": "3.18.1",
+    "jsr:@core/unknownutil@4.3": "4.3.0",
+    "jsr:@core/unknownutil@^4.3.0": "4.3.0",
     "jsr:@denops/core@7": "7.0.1",
-    "jsr:@denops/std@7": "7.0.1",
-    "jsr:@milly/denops-batch-accumulate@1": "1.0.0",
-    "jsr:@std/fs@1": "1.0.0",
-    "jsr:@std/path@1.0.2": "1.0.2",
-    "jsr:@std/path@^1.0.2": "1.0.2",
-    "jsr:@std/semver@0.224.3": "0.224.3",
+    "jsr:@denops/std@7": "7.6.0",
+    "jsr:@denops/std@7.5": "7.5.1",
+    "jsr:@milly/denops-batch-accumulate@1": "1.0.1",
+    "jsr:@shougo/ddc-vim@9": "9.5.0",
+    "jsr:@std/assert@~1.0.2": "1.0.13",
+    "jsr:@std/internal@^1.0.6": "1.0.9",
+    "jsr:@std/semver@1": "1.0.5",
     "jsr:@std/ulid@1": "1.0.0"
   },
   "jsr": {
-    "@core/unknownutil@3.18.1": {
-      "integrity": "6aaa108b623ff971d062dd345da7ca03b97f61ae3d29c8677bff14fec11f0d76"
+    "@core/unknownutil@4.3.0": {
+      "integrity": "538a3687ffa81028e91d148818047df219663d0da671d906cecd165581ae55cc"
     },
     "@denops/core@7.0.1": {
       "integrity": "ede39eec60de6d5bf0fbc0337d3e420a9689cc48afea8c71752e6c0fb630bde0"
     },
-    "@denops/std@7.0.1": {
-      "integrity": "9ac3bf581dac4bd2ccfff0bcc2b77ec9183126a8ffc0d6599f280b130f175c64",
+    "@denops/std@7.5.1": {
+      "integrity": "ddf3ed8ba0da876584dfa6aa893e88d735db507483788cdb002d7164a8943c3c",
       "dependencies": [
-        "jsr:@core/unknownutil@^3.18.0",
+        "jsr:@core/unknownutil@^4.3.0",
         "jsr:@denops/core",
-        "jsr:@std/fs",
-        "jsr:@std/path@^1.0.2",
         "jsr:@std/semver",
         "jsr:@std/ulid"
       ]
     },
-    "@milly/denops-batch-accumulate@1.0.0": {
-      "integrity": "78f5ac47d4e4f512bbce5d6044e8d89316edb47edd7cf6e176be7107502a9d61",
+    "@denops/std@7.6.0": {
+      "integrity": "468a5b4121378a845bbc4cd705fe0075dff9cd0af41fbb8a797870535af5c4c8",
+      "dependencies": [
+        "jsr:@core/unknownutil@^4.3.0",
+        "jsr:@denops/core",
+        "jsr:@std/semver",
+        "jsr:@std/ulid"
+      ]
+    },
+    "@milly/denops-batch-accumulate@1.0.1": {
+      "integrity": "53c001c9b02b3c714b5d39e694ff130943eefeea3d07ec0809197e411be13d80",
       "dependencies": [
         "jsr:@denops/core"
       ]
     },
-    "@std/fs@1.0.0": {
-      "integrity": "d72e4a125af7168d717a2ed1dca77a728b422b0d138fd20579e3fa41a77da943",
+    "@shougo/ddc-vim@9.5.0": {
+      "integrity": "ffd8d8f10482cc1b31bc91f756484617fad875d919ab8f5b6ab644ed1cf48923",
       "dependencies": [
-        "jsr:@std/path@^1.0.2"
+        "jsr:@core/unknownutil@4.3",
+        "jsr:@denops/std@7.5",
+        "jsr:@std/assert"
       ]
     },
-    "@std/path@1.0.2": {
-      "integrity": "a452174603f8c620bd278a380c596437a9eef50c891c64b85812f735245d9ec7"
+    "@std/assert@1.0.13": {
+      "integrity": "ae0d31e41919b12c656c742b22522c32fb26ed0cba32975cb0de2a273cb68b29",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
     },
-    "@std/semver@0.224.3": {
-      "integrity": "7bb34b5ad46de2c0c73de0ca3e30081ef64b4361f66abd57c84ff1011c6a1233"
+    "@std/internal@1.0.9": {
+      "integrity": "bdfb97f83e4db7a13e8faab26fb1958d1b80cc64366501af78a0aee151696eb8"
+    },
+    "@std/semver@1.0.5": {
+      "integrity": "529f79e83705714c105ad0ba55bec0f9da0f24d2f726b6cc1c15e505cc2c0624"
     },
     "@std/ulid@1.0.0": {
       "integrity": "d41c3d27a907714413649fee864b7cde8d42ee68437d22b79d5de4f81d808780"

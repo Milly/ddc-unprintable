@@ -15,11 +15,6 @@
       "**/*_test.ts"
     ]
   },
-  "fmt": {
-    "exclude": [
-      "README.md"
-    ]
-  },
   "tasks": {
     "check": "deno task check:lint && deno task check:fmt && deno task check:type && deno task check:doc",
     "check:lint": "deno lint",
@@ -35,6 +30,10 @@
   "imports": {
     "@denops/std": "jsr:@denops/std@7",
     "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@1",
-    "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@9"
+    "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@9",
+    // Imports for `--doc` test.
+    "jsr:@milly/ddc-unprintable": "./lib.ts",
+    "jsr:@milly/ddc-unprintable/type": "./type.ts",
+    "jsr:@shougo/ddc-vim": "jsr:@shougo/ddc-vim@9"
   }
 }

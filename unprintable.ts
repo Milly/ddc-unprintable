@@ -41,6 +41,84 @@ const UNPRINTABLE_CHARS = [
 const UNPRINTABLE_CHAR_LENGTH = 2; // "^@".length
 const UNPRINTABLE_BYTE_LENGTH = 2; // strlen("^@")
 
+/**
+ * Provides utilities for handling and displaying unprintable characters
+ * in completion items for _ddc.vim_ sources.
+ *
+ * The `Unprintable` class is designed to be used in custom _ddc.vim_ sources
+ * to automatically detect, highlight, and safely display unprintable
+ * (non-printable ASCII or Vim `'isprint'`-excluded) characters within
+ * completion candidates.
+ * Furthermore, when completion is done, it correctly inserts the original text
+ * (including the unprintable characters) into the buffer or command line.
+ *
+ * @typeParam UserData - The type of `Item.user_data` used in completion items.
+ *
+ * @example
+ * 1. Instantiate `Unprintable` class in your ddc source.
+ * 2. Call `onInit()` in your `Source.onInit()` method to initialize instance.
+ * 3. Call `convertItems()` in your `Source.gather()` method to process completion items.
+ * 4. Call `onCompleteDone()` in your `Source.onCompleteDone()` method to restore the original text.
+ *
+ * ```ts
+ * import { Unprintable, UnprintableUserData } from "jsr:@milly/ddc-unprintable";
+ * import {
+ *   BaseSource,
+ *   type GatherArguments,
+ *   type OnCompleteDoneArguments,
+ *   type OnInitArguments,
+ * } from "jsr:@shougo/ddc-vim/source";
+ * import type { Item } from "jsr:@shougo/ddc-vim/types";
+ *
+ * interface MyParams extends Record<string, unknown> {
+ *   // Add your source parameters here
+ * }
+ *
+ * interface MyUserData extends UnprintableUserData {
+ *   // Add your user data properties here
+ * }
+ *
+ * type MyItem = Item<MyUserData>;
+ *
+ * export class Source extends BaseSource<MyParams, MyUserData> {
+ *   // 1. Instantiate this class.
+ *   #unprintable = new Unprintable<MyUserData>();
+ *
+ *   override params(): MyParams {
+ *     return {};
+ *   }
+ *
+ *   override async onInit(args: OnInitArguments<MyParams>): Promise<void> {
+ *     // 2. Call `onInit()`.
+ *     await this.#unprintable.onInit(args);
+ *   }
+ *
+ *   override async gather(
+ *     args: GatherArguments<MyParams>,
+ *   ): Promise<MyItem[]> {
+ *     const myItems: MyItem[] = [
+ *       // Generate your items here.
+ *     ];
+ *
+ *     // 3. Call `convertItems()`.
+ *     const convertedItems = await this.#unprintable!.convertItems(
+ *       args.denops,
+ *       myItems,
+ *       args.context.nextInput,
+ *     );
+ *
+ *     return convertedItems;
+ *   }
+ *
+ *   override async onCompleteDone(
+ *     args: OnCompleteDoneArguments<MyParams, MyUserData>,
+ *   ): Promise<void> {
+ *     // 4. Call `onCompleteDone()`.
+ *     await this.#unprintable.onCompleteDone(args);
+ *   }
+ * }
+ * ```
+ */
 export class Unprintable<
   UserData extends UnprintableUserData = UnprintableUserData,
 > implements UnprintableParameters {
@@ -59,6 +137,12 @@ export class Unprintable<
   #callbackId: string;
   #completeDoneCount = 0;
 
+  /**
+   * Creates an instance of the Unprintable class.
+   *
+   * @param opts - Optional parameters to configure the instance.
+   * @returns A new instance of the Unprintable class.
+   */
   constructor(opts: UnprintableOptions = {}) {
     this.#highlightName = opts.highlightName ?? "ddc_unprintable";
     this.#highlightGroup = opts.highlightGroup ?? "SpecialKey";
@@ -103,11 +187,20 @@ export class Unprintable<
     this.#abbrWidth = value | 0;
   }
 
-  /** Should convert items by this in `BaseSource.gather()`.
+  /**
+   * Call this method in your `BaseSource.gather()` implementation to process
+   * completion items.
    *
-   * If `Item.word` contains unprintable characters, it will be converted to
-   * `UnprintableOptions.placeholder`.
-   * `Item.abbr` and `Item.highlights` are generated and added.
+   * If an `Item.word` contains unprintable characters, those characters will
+   * be replaced with `UnprintableParameters.placeholder`.  The `Item.abbr` and
+   * `Item.highlights` properties will be generated and set accordingly.
+   * Additionally, the `Item.user_data` property will be extended to include
+   * internal data required by _ddc-unprintable_ library.
+   *
+   * @param denops - The Denops instance.
+   * @param items - The array of completion items to process.
+   * @param nextInput - The next input string after the completion.
+   * @returns A Promise that resolves to the processed array of items.
    */
   async convertItems(
     denops: Denops,
@@ -151,7 +244,16 @@ export class Unprintable<
     });
   }
 
-  /** Should call this in `BaseSource.onInit()`. */
+  /**
+   * Call this method in your `BaseSource.onInit()` implementation to
+   * initialize this instance.
+   *
+   * This method retrieves the set of unprintable characters (referring to
+   * Vim's `'isprint'` option) and updates the internal state accordingly.
+   *
+   * @param args - The arguments passed to `BaseSource.onInit()`.
+   * @returns A Promise that resolves when initialization is complete.
+   */
   async onInit(args: UnprintableOnInitArguments): Promise<void> {
     const chars = [
       ...UNPRINTABLE_CHARS,
@@ -160,7 +262,16 @@ export class Unprintable<
     this.#reUnprintableChar = makeCharCodeRangeRegExp(chars);
   }
 
-  /** Should call this in `BaseSource.onCompleteDone()`. */
+  /**
+   * Call this method in your `BaseSource.onCompleteDone()` implementation.
+   *
+   * This method restores the original word and input after a completion item
+   * containing unprintable characters is selected.  If the selected item does
+   * not contain unprintable characters, this method does nothing.
+   *
+   * @param args - The arguments passed to `BaseSource.onCompleteDone()`.
+   * @returns A Promise that resolves when the operation is complete.
+   */
   async onCompleteDone(
     args: UnprintableOnCompleteDoneArguments<UserData>,
   ): Promise<void> {
