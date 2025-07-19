@@ -33,12 +33,12 @@
   },
   "imports": {
     "@core/unknownutil": "jsr:@core/unknownutil@4",
-    "@denops/std": "jsr:@denops/std@7",
-    "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@1",
-    "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@9",
+    "@denops/std": "jsr:@denops/std@^8.1.1",
+    "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@^3.0.1",
+    "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@10",
     // Imports for `--doc` test.
     "jsr:@milly/ddc-unprintable": "./lib.ts",
     "jsr:@milly/ddc-unprintable/type": "./type.ts",
-    "jsr:@shougo/ddc-vim": "jsr:@shougo/ddc-vim@9"
+    "jsr:@shougo/ddc-vim": "jsr:@shougo/ddc-vim@10"
   }
 }
