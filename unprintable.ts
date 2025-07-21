@@ -1,9 +1,4 @@
-import type {
-  Context,
-  Item,
-  OnCallback,
-  PumHighlight,
-} from "@shougo/ddc-vim/types";
+import type { Item, PumHighlight } from "@shougo/ddc-vim/types";
 import type { Denops } from "@denops/std";
 import {
   append,
@@ -18,6 +13,23 @@ import {
 import { batch } from "@denops/std/batch";
 import { vim } from "@denops/std/variable";
 import { accumulate } from "@milly/denops-batch-accumulate";
+import {
+  byteLength,
+  getUnprintableChars,
+  makeCharCodeRangeRegExp,
+  makeId,
+  textToCmdline,
+  textToRegContents,
+  unprintableCharToDisplay,
+} from "./helper.ts";
+import type { UnprintableData } from "./internal_type.ts";
+import type {
+  UnprintableOnCompleteDoneArguments,
+  UnprintableOnInitArguments,
+  UnprintableOptions,
+  UnprintableParameters,
+  UnprintableUserData,
+} from "./type.ts";
 
 // deno-fmt-ignore
 const UNPRINTABLE_CHARS = [
@@ -29,50 +41,95 @@ const UNPRINTABLE_CHARS = [
 const UNPRINTABLE_CHAR_LENGTH = 2; // "^@".length
 const UNPRINTABLE_BYTE_LENGTH = 2; // strlen("^@")
 
-type UnprintableData = {
-  origWord: string;
-  origNextInput: string;
-};
-
-export type UnprintableUserData = {
-  unprintable?: never;
-};
-
-export type UnprintableOptions = {
-  /** Highlight name for unprintable chars.
-   *
-   * Default is "ddc_unprintable".
-   */
-  highlightName?: string;
-  /** Highlight group for unprintable chars.
-   *
-   * Default is "SpecialKey".
-   */
-  highlightGroup?: string;
-  /** Placeholder text for unprintable char.
-   *
-   * Must be a single character.
-   * Default is "?".
-   */
-  placeholder?: string;
-  /** Max width of the abbreviates column.
-   *
-   * If 0 is specified, be unlimited.
-   * Default is 0.
-   */
-  abbrWidth?: number;
-  /** Callback Id base string.
-   *
-   * If empty, use random id.
-   */
-  callbackId?: string;
-};
-
+/**
+ * Provides utilities for handling and displaying unprintable characters
+ * in completion items for _ddc.vim_ sources.
+ *
+ * The `Unprintable` class is designed to be used in custom _ddc.vim_ sources
+ * to automatically detect, highlight, and safely display unprintable
+ * (non-printable ASCII or Vim `'isprint'`-excluded) characters within
+ * completion candidates.
+ * Furthermore, when completion is done, it correctly inserts the original text
+ * (including the unprintable characters) into the buffer or command line.
+ *
+ * @typeParam UserData - The type of `Item.user_data` used in completion items.
+ *
+ * @example
+ * 1. Instantiate `Unprintable` class in your ddc source.
+ * 2. Call `onInit()` in your `Source.onInit()` method to initialize instance.
+ * 3. Call `convertItems()` in your `Source.gather()` method to process completion items.
+ * 4. Call `onCompleteDone()` in your `Source.onCompleteDone()` method to restore the original text.
+ *
+ * ```ts
+ * import { Unprintable, UnprintableUserData } from "jsr:@milly/ddc-unprintable";
+ * import {
+ *   BaseSource,
+ *   type GatherArguments,
+ *   type OnCompleteDoneArguments,
+ *   type OnInitArguments,
+ * } from "jsr:@shougo/ddc-vim/source";
+ * import type { Item } from "jsr:@shougo/ddc-vim/types";
+ *
+ * interface MyParams extends Record<string, unknown> {
+ *   // Add your source parameters here
+ * }
+ *
+ * interface MyUserData extends UnprintableUserData {
+ *   // Add your user data properties here
+ * }
+ *
+ * type MyItem = Item<MyUserData>;
+ *
+ * export class Source extends BaseSource<MyParams, MyUserData> {
+ *   // 1. Instantiate this class.
+ *   #unprintable = new Unprintable<MyUserData>();
+ *
+ *   override params(): MyParams {
+ *     return {};
+ *   }
+ *
+ *   override async onInit(args: OnInitArguments<MyParams>): Promise<void> {
+ *     // 2. Call `onInit()`.
+ *     await this.#unprintable.onInit(args);
+ *   }
+ *
+ *   override async gather(
+ *     args: GatherArguments<MyParams>,
+ *   ): Promise<MyItem[]> {
+ *     const myItems: MyItem[] = [
+ *       // Generate your items here.
+ *     ];
+ *
+ *     // 3. Call `convertItems()`.
+ *     const convertedItems = await this.#unprintable!.convertItems(
+ *       args.denops,
+ *       myItems,
+ *       args.context.nextInput,
+ *     );
+ *
+ *     return convertedItems;
+ *   }
+ *
+ *   override async onCompleteDone(
+ *     args: OnCompleteDoneArguments<MyParams, MyUserData>,
+ *   ): Promise<void> {
+ *     // 4. Call `onCompleteDone()`.
+ *     await this.#unprintable.onCompleteDone(args);
+ *   }
+ * }
+ * ```
+ */
 export class Unprintable<
   UserData extends UnprintableUserData = UnprintableUserData,
-> implements Required<Omit<UnprintableOptions, "callbackId">> {
-  // deno-lint-ignore no-control-regex
-  #reUnprintableChar = /[\x00-\x1f]/g;
+> implements UnprintableParameters {
+  static #DEFAULT_UNPRINTABLE_CHARS_REGEX: RegExp | undefined;
+
+  #reUnprintableChar: RegExp = new RegExp(
+    Unprintable.#DEFAULT_UNPRINTABLE_CHARS_REGEX ??= makeCharCodeRangeRegExp(
+      UNPRINTABLE_CHARS,
+    ),
+    "g",
+  );
   #highlightName: string;
   #highlightGroup: string;
   #placeholder = "?";
@@ -80,6 +137,12 @@ export class Unprintable<
   #callbackId: string;
   #completeDoneCount = 0;
 
+  /**
+   * Creates an instance of the Unprintable class.
+   *
+   * @param opts - Optional parameters to configure the instance.
+   * @returns A new instance of the Unprintable class.
+   */
   constructor(opts: UnprintableOptions = {}) {
     this.#highlightName = opts.highlightName ?? "ddc_unprintable";
     this.#highlightGroup = opts.highlightGroup ?? "SpecialKey";
@@ -124,15 +187,24 @@ export class Unprintable<
     this.#abbrWidth = value | 0;
   }
 
-  /** Should convert items by this in `BaseSource.gather()`.
+  /**
+   * Call this method in your `BaseSource.gather()` implementation to process
+   * completion items.
    *
-   * If `Item.word` contains unprintable characters, it will be converted to
-   * `UnprintableOptions.placeholder`.
-   * `Item.abbr` and `Item.highlights` are generated and added.
+   * If an `Item.word` contains unprintable characters, those characters will
+   * be replaced with `UnprintableParameters.placeholder`.  The `Item.abbr` and
+   * `Item.highlights` properties will be generated and set accordingly.
+   * Additionally, the `Item.user_data` property will be extended to include
+   * internal data required by _ddc-unprintable_ library.
+   *
+   * @param denops - The Denops instance.
+   * @param items - The array of completion items to process.
+   * @param nextInput - The next input string after the completion.
+   * @returns A Promise that resolves to the processed array of items.
    */
   async convertItems(
     denops: Denops,
-    items: Item<UserData>[],
+    items: readonly Item<UserData>[],
     nextInput: string,
   ): Promise<Item<UserData>[]> {
     const abbrWidth = Math.max(0, this.#abbrWidth);
@@ -172,23 +244,36 @@ export class Unprintable<
     });
   }
 
-  /** Should call this in `BaseSource.onInit()`. */
-  async onInit(args: { denops: Denops }): Promise<void> {
+  /**
+   * Call this method in your `BaseSource.onInit()` implementation to
+   * initialize this instance.
+   *
+   * This method retrieves the set of unprintable characters (referring to
+   * Vim's `'isprint'` option) and updates the internal state accordingly.
+   *
+   * @param args - The arguments passed to `BaseSource.onInit()`.
+   * @returns A Promise that resolves when initialization is complete.
+   */
+  async onInit(args: UnprintableOnInitArguments): Promise<void> {
     const chars = [
       ...UNPRINTABLE_CHARS,
-      ...(await this.#getUnprintableChars(args.denops)),
+      ...(await getUnprintableChars(args.denops)),
     ];
-    this.#reUnprintableChar = this.#makeUnprintableRegExp(chars);
+    this.#reUnprintableChar = makeCharCodeRangeRegExp(chars);
   }
 
-  /** Should call this in `BaseSource.onCompleteDone()`. */
+  /**
+   * Call this method in your `BaseSource.onCompleteDone()` implementation.
+   *
+   * This method restores the original word and input after a completion item
+   * containing unprintable characters is selected.  If the selected item does
+   * not contain unprintable characters, this method does nothing.
+   *
+   * @param args - The arguments passed to `BaseSource.onCompleteDone()`.
+   * @returns A Promise that resolves when the operation is complete.
+   */
   async onCompleteDone(
-    args: {
-      denops: Denops;
-      onCallback: OnCallback;
-      userData: UserData;
-      context: Context;
-    },
+    args: UnprintableOnCompleteDoneArguments<UserData>,
   ): Promise<void> {
     this.#completeDoneCount++;
     const { denops, onCallback, userData } = args;
@@ -278,31 +363,6 @@ export class Unprintable<
     }
   }
 
-  #getUnprintableChars(denops: Denops): Promise<number[]> {
-    return denops.eval(
-      "range(0x100)->filter({ _, n -> nr2char(n) !~# '\\p' })",
-    ) as Promise<number[]>;
-  }
-
-  #makeUnprintableRegExp(unprintableChars: number[]): RegExp {
-    // generate RegExp e.g.: /[\x00-\x1f\x7f-\x9f]/g
-    const unprintableSet = new Set(unprintableChars);
-    const lastGuard = 0x100;
-    unprintableSet.delete(lastGuard);
-    const xhh = (n: number) => "\\x" + `0${n.toString(16)}`.slice(-2);
-    const range: string[] = [];
-    for (let start = -1, code = 0; code <= lastGuard; ++code) {
-      if (start < 0 && unprintableSet.has(code)) {
-        start = code;
-      } else if (start >= 0 && !unprintableSet.has(code)) {
-        const end = code - 1;
-        range.push(start === end ? xhh(start) : xhh(start) + "-" + xhh(end));
-        start = -1;
-      }
-    }
-    return new RegExp(`[${range.join("")}]`, "g");
-  }
-
   #makeWord(word: string): string {
     return word.replaceAll(this.#reUnprintableChar, this.#placeholder);
   }
@@ -313,7 +373,7 @@ export class Unprintable<
 
   #generateHighlights(
     abbr: string,
-    abbrSlices: { chars: number; bytes: number }[],
+    abbrSlices: readonly Readonly<{ chars: number; bytes: number }>[],
   ): PumHighlight[] {
     const highlights: PumHighlight[] = [];
     let lastHighlight: PumHighlight | undefined;
@@ -352,31 +412,4 @@ export class Unprintable<
 
     return highlights;
   }
-}
-
-function makeId(): string {
-  return ("0000000" + Math.floor(Math.random() * 0xffffffff).toString(16))
-    .slice(-8);
-}
-
-function textToRegContents(text: string): string[] {
-  return text.split("\n").map((s) => s.replaceAll("\0", "\n"));
-}
-
-function textToCmdline(text: string): string {
-  return text.replaceAll("\n", "\r").replaceAll("\x00", "\n");
-}
-
-function unprintableCharToDisplay(c: string): string {
-  const code = c.charCodeAt(0);
-  if (code <= 0x1f) return "^" + String.fromCharCode(code + 0x40);
-  if (code === 0x7f) return "^?";
-  if (code <= 0x9f) return "~" + String.fromCharCode(code - 0x40);
-  if (code <= 0xfe) return "|" + String.fromCharCode(code - 0x80);
-  return "~?";
-}
-
-const encoder = new TextEncoder();
-function byteLength(str: string): number {
-  return encoder.encode(str).length;
 }

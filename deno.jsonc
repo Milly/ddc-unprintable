@@ -2,7 +2,8 @@
   "name": "@milly/ddc-unprintable",
   "version": "0.0.0",
   "exports": {
-    ".": "./unprintable.ts"
+    ".": "./lib.ts",
+    "./type": "./type.ts"
   },
   "publish": {
     "include": [
@@ -12,11 +13,6 @@
     ],
     "exclude": [
       "**/*_test.ts"
-    ]
-  },
-  "fmt": {
-    "exclude": [
-      "README.md"
     ]
   },
   "tasks": {
@@ -34,6 +30,10 @@
   "imports": {
     "@denops/std": "jsr:@denops/std@7",
     "@milly/denops-batch-accumulate": "jsr:@milly/denops-batch-accumulate@1",
-    "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@9"
+    "@shougo/ddc-vim": "jsr:@shougo/ddc-vim@9",
+    // Imports for `--doc` test.
+    "jsr:@milly/ddc-unprintable": "./lib.ts",
+    "jsr:@milly/ddc-unprintable/type": "./type.ts",
+    "jsr:@shougo/ddc-vim": "jsr:@shougo/ddc-vim@9"
   }
 }
