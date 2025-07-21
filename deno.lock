@@ -7,12 +7,13 @@
     "jsr:@denops/core@7": "7.0.1",
     "jsr:@denops/std@7": "7.6.0",
     "jsr:@denops/std@7.5": "7.5.1",
-    "jsr:@milly/denops-batch-accumulate@1": "1.0.1",
+    "jsr:@milly/denops-batch-accumulate@2": "2.0.0",
     "jsr:@shougo/ddc-vim@9": "9.5.0",
     "jsr:@std/assert@~1.0.2": "1.0.13",
     "jsr:@std/internal@^1.0.6": "1.0.9",
     "jsr:@std/semver@1": "1.0.5",
-    "jsr:@std/ulid@1": "1.0.0"
+    "jsr:@std/ulid@1": "1.0.0",
+    "npm:@types/node@*": "22.15.15"
   },
   "jsr": {
     "@core/unknownutil@4.3.0": {
@@ -39,8 +40,8 @@
         "jsr:@std/ulid"
       ]
     },
-    "@milly/denops-batch-accumulate@1.0.1": {
-      "integrity": "53c001c9b02b3c714b5d39e694ff130943eefeea3d07ec0809197e411be13d80",
+    "@milly/denops-batch-accumulate@2.0.0": {
+      "integrity": "9a339965c7ec9bffbbf81faff96d41f9c5c0fb2ba21fc60d3c9612ae03c16c98",
       "dependencies": [
         "jsr:@denops/core"
       ]
@@ -69,11 +70,22 @@
       "integrity": "d41c3d27a907714413649fee864b7cde8d42ee68437d22b79d5de4f81d808780"
     }
   },
+  "npm": {
+    "@types/node@22.15.15": {
+      "integrity": "sha512-R5muMcZob3/Jjchn5LcO8jdKwSCbzqmPB6ruBxMcf9kbxtniZHP327s6C37iOfuw8mbKK3cAQa7sEl7afLrQ8A==",
+      "dependencies": [
+        "undici-types"
+      ]
+    },
+    "undici-types@6.21.0": {
+      "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="
+    }
+  },
   "workspace": {
     "dependencies": [
       "jsr:@core/unknownutil@4",
       "jsr:@denops/std@7",
-      "jsr:@milly/denops-batch-accumulate@1",
+      "jsr:@milly/denops-batch-accumulate@2",
       "jsr:@shougo/ddc-vim@9"
     ]
   }
