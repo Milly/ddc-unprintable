@@ -21,20 +21,54 @@ jobs:
       matrix:
         runner:
           - ubuntu-latest
-        deno_version:
-          - 2.0.0
-          - 2.x
+        deno:
+          - version: "2.0.0"
+            # Remove lock file for unsupported lock file version
+            remove-lock: true
+          - version: "2.x"
       fail-fast: false
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: denoland/setup-deno@v1
+      - name: Remove deno.lock
+        if: matrix.deno.remove-lock == true
+        run: rm -f deno.lock
+
+      - uses: denoland/setup-deno@v2
         with:
-          deno-version: "${{ matrix.deno_version }}"
+          deno-version: "${{ matrix.deno.version }}"
 
-      - name: Check
-        run: deno task check
+      - name: Check lint
+        if: ${{ !cancelled() }}
+        run: deno task check:lint
 
-      - name: Check publish
+      - name: Check format
+        if: ${{ !cancelled() }}
+        run: deno task check:fmt
+
+      - name: Check type
+        if: ${{ !cancelled() }}
+        run: deno task check:type
+
+      - name: Check doc
+        if: ${{ !cancelled() }}
+        run: deno task check:doc
+
+  check-publish:
+    strategy:
+      matrix:
+        runner:
+          - ubuntu-latest
+        deno:
+          - version: 2.x
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: ${{ matrix.deno.version }}
+
+      - name: Check slow types
         run: deno task check:publish
