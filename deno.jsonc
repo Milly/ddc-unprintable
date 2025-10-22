@@ -16,12 +16,13 @@
       "**/*_test.ts"
     ]
   },
+  "lock": false,
   "tasks": {
     "check": "deno task check:lint && deno task check:fmt && deno task check:type && deno task check:doc",
     "check:lint": "deno lint",
     "check:fmt": "deno fmt --check",
-    "check:type": "deno check --no-lock **/*.ts",
-    "check:doc": "deno check --no-lock --doc-only **/*.ts **/*.md",
+    "check:type": "deno check **/*.ts",
+    "check:doc": "deno check --doc-only **/*.ts **/*.md",
     "check:publish": "deno publish --dry-run",
     "test": "deno test -A --doc --parallel --shuffle",
     "test:coverage": "deno task test --coverage=.coverage",
