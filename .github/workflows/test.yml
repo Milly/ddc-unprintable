@@ -23,17 +23,11 @@ jobs:
           - ubuntu-latest
         deno:
           - version: "2.0.0"
-            # Remove lock file for unsupported lock file version
-            remove-lock: true
           - version: "2.x"
       fail-fast: false
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Remove deno.lock
-        if: matrix.deno.remove-lock == true
-        run: rm -f deno.lock
 
       - uses: denoland/setup-deno@v2
         with:
