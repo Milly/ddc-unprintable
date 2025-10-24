@@ -33,6 +33,9 @@ jobs:
         with:
           deno-version: "${{ matrix.deno.version }}"
 
+      - name: Pre-cache dependencies
+        run: deno task cache
+
       - name: Check lint
         if: ${{ !cancelled() }}
         run: deno task check:lint
@@ -63,6 +66,9 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: ${{ matrix.deno.version }}
+
+      - name: Pre-cache dependencies
+        run: deno task cache
 
       - name: Check slow types
         run: deno task check:publish

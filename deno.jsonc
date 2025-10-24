@@ -18,6 +18,7 @@
   },
   "lock": false,
   "tasks": {
+    "cache": "deno install",
     "check": "deno task check:lint && deno task check:fmt && deno task check:type && deno task check:doc",
     "check:lint": "deno lint",
     "check:fmt": "deno fmt --check",
