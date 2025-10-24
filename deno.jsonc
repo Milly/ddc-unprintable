@@ -1,6 +1,5 @@
 {
   "name": "@milly/ddc-unprintable",
-  "version": "0.0.0",
   "exports": {
     ".": "./lib.ts",
     "./error": "./error.ts",
@@ -24,7 +23,7 @@
     "check:fmt": "deno fmt --check",
     "check:type": "deno check",
     "check:doc": "deno check --doc-only **/*.ts **/*.md",
-    "check:publish": "deno publish --dry-run",
+    "check:publish": "deno publish --dry-run --set-version 0.0.0",
     "fix": "deno lint --fix && deno fmt",
     "test": "LANG=C deno test -A --doc --parallel --shuffle",
     "test:coverage": "deno task test --coverage=.coverage",
