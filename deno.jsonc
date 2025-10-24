@@ -22,7 +22,7 @@
     "check": "deno task check:lint && deno task check:fmt && deno task check:type && deno task check:doc",
     "check:lint": "deno lint",
     "check:fmt": "deno fmt --check",
-    "check:type": "deno check **/*.ts",
+    "check:type": "deno check",
     "check:doc": "deno check --doc-only **/*.ts **/*.md",
     "check:publish": "deno publish --dry-run",
     "fix": "deno lint --fix && deno fmt",
