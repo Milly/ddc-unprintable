@@ -18,13 +18,15 @@
   },
   "lock": false,
   "tasks": {
+    "cache": "deno install",
     "check": "deno task check:lint && deno task check:fmt && deno task check:type && deno task check:doc",
     "check:lint": "deno lint",
     "check:fmt": "deno fmt --check",
-    "check:type": "deno check **/*.ts",
+    "check:type": "deno check",
     "check:doc": "deno check --doc-only **/*.ts **/*.md",
     "check:publish": "deno publish --dry-run",
-    "test": "deno test -A --doc --parallel --shuffle",
+    "fix": "deno lint --fix && deno fmt",
+    "test": "LANG=C deno test -A --doc --parallel --shuffle",
     "test:coverage": "deno task test --coverage=.coverage",
     "coverage": "deno coverage .coverage",
     "coverage:clean": "rm -rf .coverage"
